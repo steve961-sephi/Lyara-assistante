@@ -2,11 +2,11 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Lyara - Assistante IA</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#ffffff" />
+  <meta name="theme-color" content="#4f46e5" />
 </head>
 <body>
   <div class="container">
@@ -15,23 +15,10 @@
     </div>
     <div class="chat-box">
       <div id="chat-log" class="chat-log"></div>
-      <input
-        type="text"
-        id="user-input"
-        placeholder="Parlez à Lyara..."
-        onkeypress="if(event.key === 'Enter') sendMessage()"
-      />
+      <input type="text" id="user-input" placeholder="Parlez à Lyara..." onkeypress="if(event.key === 'Enter') sendMessage()" />
       <button onclick="sendMessage()">Envoyer</button>
     </div>
   </div>
-
-  <!-- Clé API cachée ici -->
-  <input
-    type="hidden"
-    id="api-key"
-    value=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
-  />
-
   <script src="script.js"></script>
 </body>
 </html>
