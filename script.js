@@ -1,19 +1,52 @@
-// script.js
 const chatLog = document.getElementById("chat-log");
 const userInput = document.getElementById("user-input");
 
 const memory = { name: null };
 
-function sendMessage() {
+async function sendMessage() {
   const message = userInput.value.trim();
   if (!message) return;
 
   appendMessage("Vous", message);
   userInput.value = "";
 
-  const response = generateResponse(message);
-  appendMessage("Lyara", response);
-  speak(response);
+  // Récupérer la clé API dans le champ caché
+  const apiKeyInput = document.getElementById("api-key");
+  const apiKey = apiKeyInput ? apiKeyInput.value.trim() : "";
+
+  if (!apiKey) {
+    appendMessage("Lyara", "⚠️ Clé API manquante. Merci de la renseigner.");
+    return;
+  }
+
+  try {
+    // Préparer la requête vers OpenRouter
+    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer " + apiKey,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        model: "openai/gpt-3.5-turbo",
+        messages: [
+          { role: "system", content: "Tu es Lyara, une assistante IA douce et attentionnée." },
+          { role: "user", content: message }
+        ]
+      })
+    });
+
+    if (!response.ok) throw new Error(`Erreur API ${response.status}`);
+
+    const data = await response.json();
+    const botMessage = data.choices?.[0]?.message?.content || "Désolée, je n'ai pas compris.";
+
+    appendMessage("Lyara", botMessage);
+    speak(botMessage);
+
+  } catch (err) {
+    appendMessage("Lyara", `Erreur : ${err.message}`);
+  }
 }
 
 function appendMessage(sender, text) {
@@ -21,37 +54,6 @@ function appendMessage(sender, text) {
   entry.innerHTML = `<strong>${sender}:</strong> ${text}`;
   chatLog.appendChild(entry);
   chatLog.scrollTop = chatLog.scrollHeight;
-}
-
-function generateResponse(msg) {
-  const lower = msg.toLowerCase();
-
-  if (lower.startsWith("je m'appelle")) {
-    const name = msg.split("je m'appelle")[1].trim();
-    memory.name = name;
-    return `Enchantée ${name} 😊 Je m'en souviendrai.`;
-  }
-  if (lower.includes("mon nom est")) {
-    const name = msg.split("mon nom est")[1].trim();
-    memory.name = name;
-    return `Très bien, ${name}, noté ! 😄`;
-  }
-  if (lower.includes("comment je m'appelle")) {
-    return memory.name ? `Tu t'appelles ${memory.name} !` : "Je ne connais pas encore ton prénom 🙈";
-  }
-  if (lower.includes("bonjour") || lower.includes("salut")) {
-    return memory.name ? `Bonjour ${memory.name} ! 😊` : "Bonjour ! Quel est ton prénom ?";
-  }
-  if (lower.includes("merci")) {
-    return "Avec plaisir ! Je suis là pour toi 🌟";
-  }
-  if (lower.includes("qui es-tu") || lower.includes("tu es qui")) {
-    return "Je suis Lyara, ton assistante IA douce et toujours à l'écoute ✨";
-  }
-  if (lower.includes("aide") || lower.includes("capable")) {
-    return "Je peux discuter, me souvenir de ton prénom, et bientôt lire des documents 📚";
-  }
-  return "Hmm... je ne suis pas encore sûre de ce que tu veux dire 🤔";
 }
 
 function speak(text) {
