@@ -2,7 +2,7 @@ const chatLog = document.getElementById("chat-log");
 const userInput = document.getElementById("user-input");
 
 // Mets ta clé API ici
-const apiKey = "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";
+const apiKey = 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;
 
 async function callOpenRouterAPI(prompt) {
   const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
