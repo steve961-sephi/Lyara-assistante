@@ -1,11 +1,11 @@
 const chatLog = document.getElementById("chat-log");
 const userInput = document.getElementById("user-input");
 
-// Mets ta clé API ici (en string avec guillemets)
-const apiKey = "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";
+// Ta clé API (garde-la secrète et ne la partage pas publiquement)
+const apiKey = "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";
 
-async function callOpenRouterAPI(prompt) {
-  const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+async function callOpenAI(prompt) {
+  const response = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -50,10 +50,11 @@ async function sendMessage() {
   appendMessage("Vous", message);
   userInput.value = "";
 
-  appendMessage("Lyara", "...");
+  appendMessage("Lyara", "..."); // Lyara réfléchit
 
   try {
-    const response = await callOpenRouterAPI(message);
+    const response = await callOpenAI(message);
+    // Remplace le dernier message "..." par la réponse réelle
     chatLog.lastChild.innerHTML = `<strong>Lyara:</strong> ${response}`;
     speak(response);
   } catch (error) {
