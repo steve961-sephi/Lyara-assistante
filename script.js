@@ -1,18 +1,18 @@
 const chatLog = document.getElementById("chat-log");
 const userInput = document.getElementById("user-input");
 
-// Mets ici ta clé OpenAI (modèle OpenAI, pas OpenRouter)
-const apiKey = "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";
+// Mets ta clé API entre guillemets
+const apiKey = "sk-proj-xxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
 
-async function callOpenAIAPI(prompt) {
-  const response = await fetch("https://api.openai.com/v1/chat/completions", {
+async function callOpenRouterAPI(prompt) {
+  const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       "Authorization": `Bearer ${apiKey}`
     },
     body: JSON.stringify({
-      model: "gpt-3.5-turbo",
+      model: "mistralai/mistral-7b-instruct:free",
       messages: [{ role: "user", content: prompt }]
     })
   });
@@ -53,11 +53,11 @@ async function sendMessage() {
   appendMessage("Lyara", "...");
 
   try {
-    const response = await callOpenAIAPI(message);
+    const response = await callOpenRouterAPI(message);
     chatLog.lastChild.innerHTML = `<strong>Lyara:</strong> ${response}`;
     speak(response);
   } catch (error) {
     chatLog.lastChild.innerHTML = `<strong>Lyara:</strong> Désolée, une erreur est survenue.`;
-    console.error(error);
+    console.error("Erreur:", error);
   }
 }
