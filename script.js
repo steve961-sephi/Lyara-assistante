@@ -1,7 +1,8 @@
 const chatLog = document.getElementById("chat-log");
 const userInput = document.getElementById("user-input");
-const apiKeyInput = document.getElementById("api-key");
-const apiKey = apiKeyInput ? apiKeyInput.value.trim() : "";
+
+// Mets ta clé API ici
+const apiKey = "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";
 
 async function callOpenRouterAPI(prompt) {
   const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
@@ -49,15 +50,13 @@ async function sendMessage() {
   appendMessage("Vous", message);
   userInput.value = "";
 
-  appendMessage("Lyara", "..."); // Indique que Lyara réfléchit
+  appendMessage("Lyara", "...");
 
   try {
     const response = await callOpenRouterAPI(message);
-    // Remplace le dernier message "..." par la vraie réponse
     chatLog.lastChild.innerHTML = `<strong>Lyara:</strong> ${response}`;
     speak(response);
   } catch (error) {
-    // Remplace le dernier message par un message d’erreur
     chatLog.lastChild.innerHTML = `<strong>Lyara:</strong> Désolée, une erreur est survenue.`;
     console.error(error);
   }
