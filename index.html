@@ -2,27 +2,35 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Lyara - Assistante IA</title>
   <link rel="stylesheet" href="style.css" />
-  <link rel="manifest" href="manifest.json">
+  <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#ffffff" />
 </head>
-<input type="hidden" id="api-key" value="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" />
 <body>
   <div class="container">
     <div class="avatar">
-      <img src="https://cdn-icons-png.flaticon.com/512/706/706830.png" alt="Lyara" id="lyara-avatar">
+      <img src="https://cdn-icons-png.flaticon.com/512/706/706830.png" alt="Lyara" id="lyara-avatar" />
     </div>
     <div class="chat-box">
       <div id="chat-log" class="chat-log"></div>
-      <input type="text" id="user-input" placeholder="Parlez à Lyara..." onkeypress="if(event.key === 'Enter') sendMessage()" />
+      <input
+        type="text"
+        id="user-input"
+        placeholder="Parlez à Lyara..."
+        onkeypress="if(event.key === 'Enter') sendMessage()"
+      />
       <button onclick="sendMessage()">Envoyer</button>
     </div>
   </div>
 
-  <!-- Champ caché pour ta clé API -->
-  <input type="password" id="api-key" placeholder="Clé API" style="display:none;" />
+  <!-- Clé API cachée ici -->
+  <input
+    type="hidden"
+    id="api-key"
+    value="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"
+  />
 
   <script src="script.js"></script>
 </body>
