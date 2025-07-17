@@ -1,10 +1,10 @@
 const chatLog = document.getElementById("chat-log");
 const userInput = document.getElementById("user-input");
 
-// Ta clé API (garde-la secrète et ne la partage pas publiquement)
-const apiKey = "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";
+// Mets ici ta clé OpenAI (modèle OpenAI, pas OpenRouter)
+const apiKey = "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";
 
-async function callOpenAI(prompt) {
+async function callOpenAIAPI(prompt) {
   const response = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: {
@@ -12,7 +12,7 @@ async function callOpenAI(prompt) {
       "Authorization": `Bearer ${apiKey}`
     },
     body: JSON.stringify({
-      model: "gpt-4o-mini",
+      model: "gpt-3.5-turbo",
       messages: [{ role: "user", content: prompt }]
     })
   });
@@ -50,11 +50,10 @@ async function sendMessage() {
   appendMessage("Vous", message);
   userInput.value = "";
 
-  appendMessage("Lyara", "..."); // Lyara réfléchit
+  appendMessage("Lyara", "...");
 
   try {
-    const response = await callOpenAI(message);
-    // Remplace le dernier message "..." par la réponse réelle
+    const response = await callOpenAIAPI(message);
     chatLog.lastChild.innerHTML = `<strong>Lyara:</strong> ${response}`;
     speak(response);
   } catch (error) {
