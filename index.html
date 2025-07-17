@@ -2,11 +2,9 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Lyara - Assistante IA</title>
   <link rel="stylesheet" href="style.css" />
-  <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#4f46e5" />
 </head>
 <body>
   <div class="container">
@@ -15,7 +13,12 @@
     </div>
     <div class="chat-box">
       <div id="chat-log" class="chat-log"></div>
-      <input type="text" id="user-input" placeholder="Parlez à Lyara..." onkeypress="if(event.key === 'Enter') sendMessage()" />
+      <input
+        type="text"
+        id="user-input"
+        placeholder="Parlez à Lyara..."
+        onkeypress="if(event.key === 'Enter') sendMessage()"
+      />
       <button onclick="sendMessage()">Envoyer</button>
     </div>
   </div>
