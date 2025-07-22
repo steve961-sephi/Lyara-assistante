@@ -129,3 +129,17 @@ function startListening() {
     console.error("Erreur micro:", event.error);
   };
 }
+function simulateTalking(model) {
+  let t = 0;
+  const head = model.getObjectByName("Head"); // ou "Neck" selon le nom exact
+  const interval = setInterval(() => {
+    if (head) {
+      head.rotation.y = Math.sin(t) * 0.05;
+      head.rotation.x = Math.sin(t * 1.5) * 0.02;
+    }
+    t += 0.1;
+  }, 50);
+
+  setTimeout(() => clearInterval(interval), 3000); // 3 sec
+}
+simulateTalking(scene.children.find(obj => obj.name === "Wolf3D_Avatar")); // remplace par ton modèle exact
