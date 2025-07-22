@@ -1,145 +1,47 @@
-import * as THREE from "https://cdn.skypack.dev/three";
-import { GLTFLoader } from "https://cdn.skypack.dev/three/examples/jsm/loaders/GLTFLoader.js";
-import { OrbitControls } from "https://cdn.skypack.dev/three/examples/jsm/controls/OrbitControls.js";
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
+import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/GLTFLoader.js';
+import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js';
 
-let scene, camera, renderer, mixer;
-initScene();
-animate();
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x111111);
 
-function initScene() {
-  scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+camera.position.set(0, 1.6, 3);
 
-  camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 100);
-  camera.position.set(0, 1.5, 2.5);
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
 
-  renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  document.body.appendChild(renderer.domElement);
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.target.set(0, 1.5, 0);
+controls.update();
 
-  const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
-  scene.add(ambientLight);
+const light = new THREE.HemisphereLight(0xffffff, 0x444444, 1);
+scene.add(light);
 
-  const dirLight = new THREE.DirectionalLight(0xffffff, 1);
-  dirLight.position.set(1, 3, 2);
-  scene.add(dirLight);
+const loader = new GLTFLoader();
+loader.load('avatar.glb', (gltf) => {
+  const model = gltf.scene;
+  scene.add(model);
 
-  const controls = new OrbitControls(camera, renderer.domElement);
-  controls.target.set(0, 1.5, 0);
-  controls.update();
+  const mixer = new THREE.AnimationMixer(model);
+  gltf.animations.forEach(clip => mixer.clipAction(clip).play());
 
-  const loader = new GLTFLoader();
-  loader.load(
-    "https://models.readyplayer.me/687f1af2041002c23477fa00.glb",
-    function (gltf) {
-      const model = gltf.scene;
-      scene.add(model);
+  animate.mixers = [mixer];
+}, undefined, (error) => {
+  console.error("Erreur lors du chargement de l'avatar :", error);
+});
 
-      if (gltf.animations.length > 0) {
-        mixer = new THREE.AnimationMixer(model);
-        gltf.animations.forEach((clip) => {
-          mixer.clipAction(clip).play();
-        });
-      }
-    },
-    undefined,
-    function (error) {
-      console.error(error);
-    }
-  );
-
-  window.addEventListener("resize", () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-  });
-}
+const clock = new THREE.Clock();
 
 function animate() {
   requestAnimationFrame(animate);
-  if (mixer) mixer.update(0.01);
+
+  const delta = clock.getDelta();
+  if (animate.mixers) {
+    animate.mixers.forEach(mixer => mixer.update(delta));
+  }
+
   renderer.render(scene, camera);
 }
-
-async function sendMessage() {
-  const input = document.getElementById("user-input");
-  const message = input.value.trim();
-  if (!message) return;
-
-  addMessage("👤", message);
-  input.value = "";
-
-  const response = await getLyaraResponse(message);
-  addMessage("🤖", response);
-  speak(response);
-}
-
-function addMessage(sender, text) {
-  const chatLog = document.getElementById("chat-log");
-  const p = document.createElement("p");
-  p.innerText = `${sender} ${text}`;
-  chatLog.appendChild(p);
-  chatLog.scrollTop = chatLog.scrollHeight;
-}
-
-function speak(text) {
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = "fr-FR";
-  utterance.rate = 1;
-  speechSynthesis.speak(utterance);
-}
-
-// 🔐 Clé API OpenAI ici
-const OPENAI_API_KEY = "sk-proj-..."; // <-- Mets ta clé ici
-
-async function getLyaraResponse(userMessage) {
-  try {
-    const res = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${OPENAI_API_KEY}`,
-      },
-      body: JSON.stringify({
-        model: "gpt-3.5-turbo",
-        messages: [{ role: "user", content: userMessage }],
-      }),
-    });
-
-    const data = await res.json();
-    return data.choices?.[0]?.message?.content?.trim() || "Je n'ai pas compris.";
-  } catch (err) {
-    console.error("Erreur OpenAI:", err);
-    return "Erreur de connexion.";
-  }
-}
-function startListening() {
-  const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-  recognition.lang = "fr-FR";
-  recognition.interimResults = false;
-  recognition.maxAlternatives = 1;
-
-  recognition.start();
-  recognition.onresult = (event) => {
-    const voiceInput = event.results[0][0].transcript;
-    document.getElementById("user-input").value = voiceInput;
-    sendMessage(); // envoie la phrase directement
-  };
-
-  recognition.onerror = (event) => {
-    console.error("Erreur micro:", event.error);
-  };
-}
-function simulateTalking(model) {
-  let t = 0;
-  const head = model.getObjectByName("Head"); // ou "Neck" selon le nom exact
-  const interval = setInterval(() => {
-    if (head) {
-      head.rotation.y = Math.sin(t) * 0.05;
-      head.rotation.x = Math.sin(t * 1.5) * 0.02;
-    }
-    t += 0.1;
-  }, 50);
-
-  setTimeout(() => clearInterval(interval), 3000); // 3 sec
-}
-simulateTalking(scene.children.find(obj => obj.name === "Wolf3D_Avatar")); // remplace par ton modèle exact
+animate();
