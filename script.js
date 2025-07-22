@@ -112,3 +112,20 @@ async function getLyaraResponse(userMessage) {
     return "Erreur de connexion.";
   }
 }
+function startListening() {
+  const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+  recognition.lang = "fr-FR";
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
+
+  recognition.start();
+  recognition.onresult = (event) => {
+    const voiceInput = event.results[0][0].transcript;
+    document.getElementById("user-input").value = voiceInput;
+    sendMessage(); // envoie la phrase directement
+  };
+
+  recognition.onerror = (event) => {
+    console.error("Erreur micro:", event.error);
+  };
+}
