@@ -1,21 +1,48 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Lyara 3D</title>
-  <style>
-    body {
-      margin: 0;
-      overflow: hidden;
-      background-color: #000;
-    }
-    canvas {
-      display: block;
-    }
-  </style>
-</head>
-<body>
-  <script type="module" src="script.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Lyara 3D</title>
+    <style>
+      html, body {
+        margin: 0;
+        overflow: hidden;
+        font-family: sans-serif;
+      }
+      #chat-container {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(255, 255, 255, 0.9);
+        padding: 10px;
+        border-radius: 10px;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+      #chat-log {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        max-width: 40%;
+        color: white;
+        background: rgba(0, 0, 0, 0.6);
+        padding: 10px;
+        border-radius: 10px;
+        font-size: 14px;
+        max-height: 40%;
+        overflow-y: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="chat-log"></div>
+    <div id="chat-container">
+      <input type="text" id="user-input" placeholder="Parle à Lyara..." />
+      <button onclick="sendMessage()">Envoyer</button>
+    </div>
+
+    <script type="module" src="script.js"></script>
+  </body>
 </html>
