@@ -10,15 +10,22 @@
 </head>
 <body>
   <div class="container">
-    <div class="avatar">
-      <img src="https://cdn-icons-png.flaticon.com/512/706/706830.png" alt="Lyara" id="lyara-avatar">
-    </div>
+    <!-- Zone d'affichage 3D -->
+    <div id="avatar-canvas"></div>
+
     <div class="chat-box">
       <div id="chat-log" class="chat-log"></div>
       <input type="text" id="user-input" placeholder="Parlez à Lyara..." onkeypress="if(event.key === 'Enter') sendMessage()" />
       <button onclick="sendMessage()">Envoyer</button>
     </div>
   </div>
+
+  <!-- Librairies 3D -->
+  <script type="module" src="avatar.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/loaders/GLTFLoader.js"></script>
+  
+  <!-- Script IA -->
   <script src="script.js"></script>
 </body>
 </html>
